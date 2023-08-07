@@ -6,7 +6,7 @@ Small yet handy collection of useful scripts, git & shell aliases to deal with G
 ### Installation
 For standalone scripts, do a `git clone` somewhere in your `$PATH` & make the scripts executable. That's a `chmod +x`. Simple. 
 
-#### `git tags`
+#### `git tags [-n N]`
 It's important to version the release changelogs within a repository. Some choose to use a separate `CHANGELOG.md`, however, Git tag annotations are also a great tool for this purpose. 
 
 The `git tags` script provides a readable colored trail of annotated git tags which serve as the chronological trail for the release tags & changelogs. If provided with `-n N` argument, it shows the last `n` release tags.
@@ -55,7 +55,7 @@ Changelog:
 ```
 
 
-#### `git changelog`
+#### `git changelog [ref-hash-since]`
 What were the changes since the latest annotated tag? `git changelog` has the answer:
 
 ```
@@ -67,7 +67,7 @@ Changelog:
 - open: make RESOLVE_CACHED correctly test for O_TMPFILE
 ```
 
-#### `git release`
+#### `git release <version> [--gitlab]`
 Time to release a new version? `git release` might be handy, especially if you also use Gitlab as the `origin` remote of the repo.
 
 Given a tag, for example `4.2.0`, it create a new annotated tag using the `git changelog` output and optionally if provided with `--gitlab` argument, creates a corresponding Gitlab release on the remote. 
@@ -93,7 +93,7 @@ https://gitlab.mydomain.ltd:group-name/repo-name/-/releases/4.2.0
 ```
 
 
-#### `git fixup [ref-hash]`
+#### `git fixup [ref-hash-onto]`
 Does a transparent rebase by fixing up the all the uncommitted changes into the last commit, or optionally the given ref hash.
 
 ```
