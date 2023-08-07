@@ -1,0 +1,21 @@
+#!/bin/bash
+# Generates a formatted changelog out of the commits since last annotated tag or the given ref.
+#
+# Usage:
+# git changelog [ref hash or default to last annotated tag]
+
+for cmd in git; do
+    if ! command -v $cmd &> /dev/null; then
+        echo "❗️ERROR: $cmd is not installed."
+        exit 1
+    fi
+done
+
+changelog=$(git --no-pager log ${1:-$(git describe --tags --abbrev=0)}..HEAD --format='- %s')
+
+if [[ -z "$changelog" ]]; then
+  echo "Nothing new. Make some commits first."
+  exit 1
+else
+  printf "Changelog\n%s\n" "$changelog"
+fi
