@@ -33,6 +33,7 @@ changelog=$(git changelog)
 git_remote_name=origin
 git_tag_name="$version"
 git_tag_annotation="Release $version\n\n$changelog"
+git_tag_annotation=$(printf %b "${git_tag_annotation}")
 
 git tag -s -a "$git_tag_name" -m "$git_tag_annotation"
 echo "New tag was successfully created 🕺"
