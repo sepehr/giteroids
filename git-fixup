@@ -1,0 +1,21 @@
+#!/bin/bash
+# Fixes up the uncommitted changes into the last commit or the given hash by doing a rebase under the hood.
+#
+# Usage:
+# git fixup [ref hash or default to last commit]
+#
+# Example:
+# git fixup         # Fixup to the last commit.
+# git fixup HEAD~1  # Fixup to HEAD~1 commit.
+
+for cmd in git; do
+    if ! command -v $cmd &> /dev/null; then
+        echo "❗️ERROR: $cmd is not installed."
+        exit 1
+    fi
+done
+
+git add .
+git commit --fixup ${1:-$(git rev-parse HEAD)}
+GIT_EDITOR=true git rebase --interactive --autosquash ${1:-$(git rev-parse HEAD~2)}~1
+
