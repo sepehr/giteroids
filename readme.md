@@ -1,5 +1,5 @@
 # Giteroids
-Small yet handy collection of useful scripts & aliases to deal with git repos on daily basis.
+Small yet handy collection of useful scripts, git & shell aliases to deal with Git repos on a daily basis. Repeatedly.
 
 
 ## Scripts
@@ -103,7 +103,7 @@ Does a transparent rebase by fixing up the all the uncommitted changes into the 
 Successfully rebased and updated refs/heads/main.
 ```
 
-## Aliases
+## Git Aliases
 ### Installation
 To install git aliases, add a [`include.path`](https://git-scm.com/docs/git-config#_includes) config directive to your global git config file at `~/.gitconfig`:
 
@@ -113,3 +113,14 @@ To install git aliases, add a [`include.path`](https://git-scm.com/docs/git-conf
 ```
 
 Check out that file for a list of available aliases.
+
+## Shell Aliases
+If command line is your main interface with git, you have to be lazy as me. The `giteroids.aliases` file include a set of short git shorthands. `gs` for `git status` kind, you get the idea.
+
+### Installation
+Source it into your favorite shell configuration. For example:
+
+```
+# .zshrc
+[ -f "path/to/giteroids/giteroids.aliases" ] && source "path/to/giteroids/giteroids.aliases"
+```
