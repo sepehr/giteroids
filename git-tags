@@ -1,0 +1,41 @@
+#!/bin/bash
+# Generates a readable trail of annotated tags. When <count> is provided the sort is descending, otherwise ascending.
+#
+# Usage:
+# git tags [count]
+#
+# Examples:
+# git tags       # show a trail of all annotated tags in asc order.
+# git tags -n 1  # show the last n annotated tags in desc order.
+
+for cmd in git; do
+    if ! command -v $cmd &> /dev/null; then
+        echo "❗️ERROR: $cmd is not installed."
+        exit 1
+    fi
+done
+
+count=""
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case $key in
+        -n)
+        count="$2"
+        shift
+        shift
+        ;;
+
+        # unknown option
+        *)
+        shift
+        ;;
+    esac
+done
+
+if [[ -n "$count" ]]; then
+  args="--count=$count --sort=-taggerdate"
+else
+  args="--sort=taggerdate"
+fi
+
+/bin/bash -c "git for-each-ref $args --format='%(color:dim)%(refname:short) at %(*objectname:short=7)%0a%(taggerdate)%0a%(taggername) %(taggeremail)%(color:reset)%0a%(color:green)%(subject)%(color:reset)%0a%(contents:body)%0a' refs/tags"
