@@ -4,17 +4,17 @@ Small yet handy collection of useful scripts, git & shell aliases to deal with G
 
 ## Scripts
 ### Installation
-For standalone scripts, do a `git clone` somewhere in your `$PATH` & make the scripts executable. That's a `chmod +x`. Simple. 
+For standalone scripts, do a `git clone` somewhere in your `$PATH` & make the scripts executable. That's a `chmod +x`. Simple.
 
 #### `git tags [-n N]`
-It's important to version the release changelogs within a repository. Some choose to use a separate `CHANGELOG.md`, however, Git tag annotations are also a great tool for this purpose. 
+It's important to version the release changelogs within a repository. Some choose to use a separate `CHANGELOG.md`, however, Git tag annotations are also a great tool for this purpose.
 
 The `git tags` script provides a readable colored trail of annotated git tags which serve as the chronological trail for the release tags & changelogs. If provided with `-n N` argument, it shows the last `n` release tags.
 
 ```
 ● git tags
 
-... 
+...
 
 v6.5-rc4 at 5d0c230
 Sun Jul 30 13:23:47 2023 -0700
@@ -33,7 +33,7 @@ Sun Aug 6 15:07:51 2023 -0700
 Linus Torvalds <torvalds@linux-foundation.org>
 Linux 6.5-rc5
 Changelog:
-- fs: rely on ->iterate_shared to determine f_pos locking 
+- fs: rely on ->iterate_shared to determine f_pos locking
 - vfs: get rid of old '->iterate' directory operation
 - proc: fix missing conversion to 'iterate_shared'
 - open: make RESOLVE_CACHED correctly test for O_TMPFILE
@@ -48,7 +48,7 @@ Sun Aug 6 15:07:51 2023 -0700
 Linus Torvalds <torvalds@linux-foundation.org>
 Linux 6.5-rc5
 Changelog:
-- fs: rely on ->iterate_shared to determine f_pos locking 
+- fs: rely on ->iterate_shared to determine f_pos locking
 - vfs: get rid of old '->iterate' directory operation
 - proc: fix missing conversion to 'iterate_shared'
 - open: make RESOLVE_CACHED correctly test for O_TMPFILE
@@ -61,7 +61,7 @@ What were the changes since the latest annotated tag? `git changelog` has the an
 ```
 ● git changelog
 Changelog:
-- fs: rely on ->iterate_shared to determine f_pos locking 
+- fs: rely on ->iterate_shared to determine f_pos locking
 - vfs: get rid of old '->iterate' directory operation
 - proc: fix missing conversion to 'iterate_shared'
 - open: make RESOLVE_CACHED correctly test for O_TMPFILE
@@ -70,7 +70,7 @@ Changelog:
 #### `git release <version> [--gitlab]`
 Time to release a new version? `git release` might be handy, especially if you also use Gitlab as the `origin` remote of the repo.
 
-Given a tag, for example `4.2.0`, it create a new annotated tag using the `git changelog` output and optionally if provided with `--gitlab` argument, creates a corresponding Gitlab release on the remote. 
+Given a tag, for example `4.2.0`, it create a new annotated tag using the `git changelog` output and optionally if provided with `--gitlab` argument, creates a corresponding Gitlab release on the remote.
 
 For the gitlab release functionality to work, a  `GITLAB_RELEASE_ACCESS_TOKEN` environment variable must be in context; which is a personal access token with the `api` scope. Export it somewhere in your shell configuration.
 
