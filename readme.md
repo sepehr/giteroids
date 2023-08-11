@@ -109,7 +109,7 @@ To install git aliases, add a [`include.path`](https://git-scm.com/docs/git-conf
 
 ```ini
 [includes]
-  path = /path/to/giteroids-repo/giteroids.gitconfig
+  path = /path/to/giteroids-repo/gitconfig
 ```
 
 Check out that file for a list of available aliases.

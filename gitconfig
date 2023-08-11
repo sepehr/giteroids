@@ -1,0 +1,47 @@
+[alias]
+    st = status
+
+    ls = ls-files
+
+    adog = "log --all --decorate --oneline --graph"
+
+    unstage = reset
+
+    undelete = "!git checkout $(git rev-list -n 1 HEAD -- $1)~1 -- $1"
+
+    stage-rm = rm --cached
+
+    forget = "!git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch $1' --prune-empty --tag-name-filter cat -- --all; git rm -r $1"
+
+    wipe = "!git filter-branch --tree-filter \"rm -f $1\" HEAD"
+
+    hide = update-index --assume-unchanged
+
+    unhide = update-index --no-assume-unchanged
+
+    prev = checkout HEAD~
+
+    next = "!git log --reverse --pretty=%H master | grep -A 1 $(git rev-parse HEAD) | tail -n1 | xargs git checkout"
+
+    filesof = diff-tree -r --no-commit-id --name-only --diff-filter=ACMRTUXB
+
+    conflicts = diff --name-only --diff-filter=U
+
+    authors = "!git log --format='%aN <%aE>' | sort -u"
+
+    history = log --follow --reverse --patch
+
+    since = "!git log ${1:-$(git describe --tags --abbrev=0)}..HEAD --oneline"
+
+    signall = "!git filter-branch --commit-filter 'git commit-tree -S "$@";' -- --all"
+
+    branch-diff = "!git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative $1..$2"
+
+    ignore = "update-index --assume-unchanged"
+
+    unignore = "update-index --no-assume-unchanged"
+
+    up = "!git fetch origin ${1:-$(git rev-parse --abbrev-ref HEAD)} && git rebase origin/${1:-$(git rev-parse --abbrev-ref HEAD)}"
+
+    sw = "!git fetch origin $1 && git checkout $1"
+
