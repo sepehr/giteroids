@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+
+# git mr main "state::awaiting release" sep
+# needs: https://github.com/zaquestion/lab
+git-mr() {
+    for cmd in lab; do
+        if ! command -v $cmd &> /dev/null; then
+            echo "❗️ERROR: $cmd is not installed."
+            exit 1
+        fi
+    done
+
+    target_branch=${1:-dev}
+    label=${2:-"state::awaiting review"}
+    assignee=${3:-sep}
+
+    lab mr create origin "$target_branch" -l "$label" -a "$asignee"
+}
+
+# git prev commit
+git-prev() {
+    git checkout HEAD~
+}
+
+# git next commit
+git-next() {
+    git log --reverse --pretty=%H master | grep -A 1 $(git rev-parse HEAD) | tail -n1 | xargs git checkout
+}
+
+# drop remote merged branches
+git-branch-cleanup() {
+    git branch -r --merged | grep -v 'master' | grep -v 'dev' | sed 's/origin\///' | xargs -n 1 git push --delete origin
+}
+
+# cherrypick from another repo
+git-cherry-pick-from() {
+    git --git-dir=$(realpath $1/.git) format-patch -k -1 --stdout $2 | git am -3 -k
+}
+
+# git fetch & checkout branch
+gftch() {
+    if [[ -z "$1" ]]; then
+        echo "No branch name given."
+        return 1
+    fi
+
+    git fetch origin "$1"
+    git checkout "$1"
+}
+
+# git branch delete both from local & remote
+gbd() {
+    if [[ -z "$1" ]]; then
+        echo "No branch name given."
+        return 1
+    fi
+
+    git branch -d "$1"
+    git push origin -d "$1" --no-verify
+}
+
+# git fetch from remote, and rebase locally
+# also update the tags from remote forcefully
+gftrb() {
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+  git fetch origin "$current_branch"
+  git rebase origin/"$current_branch"
+  git fetch origin --tags --force
+}
+
+# shorthands
+alias g=git
+alias gup="git up"
+alias gsw="git sw"
+alias gfx="git fixup"
+alias gft="git fetch origin"
+alias gl="git log --full-history --show-signature"
+alias gll="git log --full-history --oneline --graph --decorate"
+alias gt="git tag"
+alias gts="git semver-tags"
+alias gp="git push"
+alias gpf="git push --force-with-lease"
+alias gpt="git push && git push --tags"
+alias gd="git diff"
+alias gdw="git diff --color-words=."
+alias gds="git diff --staged"
+alias gdsw="git diff --staged --color-words=."
+alias gdt="git difftool"
+alias gdst="git difftool --staged"
+alias grb="git rebase"
+alias ga="git add"
+alias gaa="git add ."
+alias gb="git branch"
+alias gs="git status"
+alias gch="git checkout"
+alias gr="git remote -v"
+alias gc="git commit"
+alias gcm="git commit -m"
+alias gca="git add . && git commit"
+alias gcs="git commit -S -m"
+alias gcas="git commit -S -am"
+alias gpv="git prev"
+alias gnx="git next"
+alias gbs="git bisect"
+alias gm="git merge"
+alias gmd="git merge --no-commit --no-ff"
+alias gma="git merge --abort"
+alias gmt="git mergetool"
+alias gst="git stash"
+alias gast="git add . && git stash"
+alias gcp="git cherry-pick"
+alias gsh="git show"
+alias grs="git reset"

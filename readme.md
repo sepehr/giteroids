@@ -114,13 +114,13 @@ To install git aliases, add a [`include.path`](https://git-scm.com/docs/git-conf
 
 Check out that file for a list of available aliases.
 
-## Shell Aliases
-If command line is your main interface with git, you have to be lazy as me. The `giteroids.aliases` file include a set of short git shorthands. `gs` for `git status` kind, you get the idea.
+## Shell Aliases & Helpers
+If command line is your main interface with git, you have to be lazy as me. The `giteroids/shell` file includes a set of git shorthands as aliases & helper functions. `gs` for `git status` kind, `git mr` for opening a Gitlab MR & such, you get the idea.
 
 ### Installation
 Source it into your favorite shell configuration. For example:
 
 ```
 # .zshrc
-[ -f "path/to/giteroids/giteroids.aliases" ] && source "path/to/giteroids/giteroids.aliases"
+[ -f "path/to/giteroids/shell" ] && source "path/to/giteroids/shell"
 ```
