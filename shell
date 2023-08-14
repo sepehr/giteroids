@@ -48,6 +48,11 @@ gftch() {
     git checkout "$1"
 }
 
+# git rebase for the lazy
+grbb() {
+    GIT_EDITOR=true git rebase -i "HEAD~${1:-3}"
+}
+
 # git branch delete both from local & remote
 gbd() {
     if [[ -z "$1" ]]; then
@@ -62,11 +67,11 @@ gbd() {
 # git fetch from remote, and rebase locally
 # also update the tags from remote forcefully
 gftrb() {
-  current_branch=$(git rev-parse --abbrev-ref HEAD)
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
 
-  git fetch origin "$current_branch"
-  git rebase origin/"$current_branch"
-  git fetch origin --tags --force
+    git fetch origin "$current_branch"
+    git rebase origin/"$current_branch"
+    git fetch origin --tags --force
 }
 
 # shorthands
