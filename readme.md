@@ -108,7 +108,7 @@ Successfully rebased and updated refs/heads/main.
 To install git aliases, add a [`include.path`](https://git-scm.com/docs/git-config#_includes) config directive to your global git config file at `~/.gitconfig`:
 
 ```ini
-[includes]
+[include]
   path = /path/to/giteroids-repo/gitconfig
 ```
 
