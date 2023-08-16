@@ -1,0 +1,25 @@
+#!/bin/bash
+# Opens up a Gitlab Merge request using lab cli. This depends on:
+# https://github.com/zaquestion/lab
+#
+# Usage:
+# git mr [target_branch] [label] [assignee]
+#
+# Example:
+# git mr
+# git mr main "state::awaiting release" sep
+
+git-mr() {
+    for cmd in lab; do
+        if ! command -v $cmd &> /dev/null; then
+            echo "❗️ERROR: $cmd is not installed."
+            exit 1
+        fi
+    done
+
+    target_branch=${1:-dev}
+    label=${2:-"state::awaiting review"}
+    assignee=${3:-sep}
+
+    lab mr create origin "$target_branch" -l "$label" -a "$asignee"
+}

@@ -1,22 +1,5 @@
 #!/usr/bin/env bash
 
-# git mr main "state::awaiting release" sep
-# needs: https://github.com/zaquestion/lab
-git-mr() {
-    for cmd in lab; do
-        if ! command -v $cmd &> /dev/null; then
-            echo "❗️ERROR: $cmd is not installed."
-            exit 1
-        fi
-    done
-
-    target_branch=${1:-dev}
-    label=${2:-"state::awaiting review"}
-    assignee=${3:-sep}
-
-    lab mr create origin "$target_branch" -l "$label" -a "$asignee"
-}
-
 # git prev commit
 git-prev() {
     git checkout HEAD~
