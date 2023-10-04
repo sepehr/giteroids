@@ -1,12 +1,18 @@
 #!/bin/bash
-# Tags a new release with the given version. Optionally creates a Gitlab release. The Gitlab API endpoint is inferred
-# from the remote named "origin". Change `git_remote_name` below to rely on another remote.
+# Tags a new release with the given version. Optionally creates a Gitlab release and/or MR.
+# The Gitlab API endpoint is inferred from the remote named "origin". Change `git_remote_name` below to rely on another
+# remote.
 #
 # Usage:
-# git release <version> [--gitlab]
+# git release <version> [--gitlab-release] [--gitlab-mr]
 #
 # Example:
-# git release 4.2.0 --gitlab
+# git release 4.2.0 --gitlab-release --gitlab-mr
+#
+# @todo:
+# - Use official glab cli.
+# - Open up vim allow to edit the changelog before creating the release or MR.
+# - Figure out the version based on commit semver markers for patch, minor & major.
 
 for cmd in git git-changelog curl sed jq; do
     if ! command -v $cmd &> /dev/null; then
@@ -16,15 +22,18 @@ for cmd in git git-changelog curl sed jq; do
 done
 
 if [ "$#" -lt 1 ] || [[ "$1" =~ ^-- ]]; then
-    echo "Usage: git release <version> [--gitlab]"
+    echo "Usage: git release <version> [--gitlab-release] [--gitlab-mr]"
     exit 1
 fi
 
 gitlab_release=false
+gitlab_mr=false
 for arg in "$@"; do
-    if [ "$arg" = "--gitlab" ]; then
+    if [ "$arg" = "--gitlab-release" ]; then
         gitlab_release=true
-        break
+    fi
+    if [ "$arg" = "--gitlab-mr" ]; then
+        gitlab_mr=true
     fi
 done
 
@@ -34,6 +43,8 @@ git_remote_name=origin
 git_tag_name="$version"
 git_tag_annotation="Release $version\n\n$changelog"
 git_tag_annotation=$(printf %b "${git_tag_annotation}")
+git_tag_annotation_markdown="### Release $version  \n\n#### $changelog"
+git_tag_annotation_markdown=$(printf %b "${git_tag_annotation_markdown}")
 
 git tag -s -a "$git_tag_name" -m "$git_tag_annotation"
 echo "New tag was successfully created 🕺"
@@ -41,8 +52,7 @@ echo "New tag was successfully created 🕺"
 # See: https://docs.gitlab.com/ee/api/releases/#create-a-release
 if [ "$gitlab_release" = true ]; then
     release_name="$version"
-    release_desc="### Release $release_name  \n\n#### $changelog"
-    release_desc=$(printf %b "${release_desc}")
+    release_desc="$git_tag_annotation_markdown"
 
     rollback () {
         printf "\n❗️ERROR\n%s\n\nℹ️  INFO\nThe tag we just created is going to be deleted now. Good luck next time!\n" "$1"
@@ -88,9 +98,31 @@ if [ "$gitlab_release" = true ]; then
     response_code="${response: -3}"
 
     if [[ "$response_code" -eq 201 ]]; then
+        release_url="https://$domain/$repo_path/-/releases/$release_name"
+
         echo "A new Gitlab release was created 💃🎉"
-        echo "https://$domain/$repo_path/-/releases/$release_name"
+        echo "$release_url"
     else
         rollback "Failed to create the Gitlab release: ($response_code) $(echo $response_body | jq .message)"
     fi
+fi
+
+if [ "$gitlab_mr" = true ]; then
+    for cmd in lab; do
+        if ! command -v $cmd &> /dev/null; then
+            echo "❗️ERROR: $cmd is not installed."
+            exit 1
+        fi
+    done
+
+    mr_file_content="$git_tag_annotation"
+
+    if [ "$gitlab_release" = true ]; then
+        mr_file_content=$(printf %b "${mr_file_content}\n\n${release_url}")
+    fi
+
+    mr_file=$(mktemp)
+    echo "$mr_file_content" > "$mr_file"
+
+    lab mr create origin master -l "state::awaiting release" -a sep -F "$mr_file"
 fi
